@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+""" This is a file that runs django commands"""
 import os
 import sys
 
