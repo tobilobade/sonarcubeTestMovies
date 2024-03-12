@@ -2,7 +2,6 @@
 """ This is a file that runs django commands"""
 import os
 import sys
-
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demoproj.settings')
     try:
