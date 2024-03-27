@@ -1,22 +1,19 @@
 version: 0.2
 env:
   secrets-manager:
-    SONAR_LOGIN_SECRET: x23212365/dam/prod/sonar
+    LOGIN: x23212365/dam/prod/sonar:sonartoken
+    HOST: x23212365/dam/prod/sonar:HOST
+    Organization: x23212365/dam/prod/sonar:Organization
+    Project: x23212365/dam/prod/sonar:Project
 phases:
   pre_build:
     commands:
-      - SONAR_LOGIN=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.sonartoken')
-      - SONAR_HOST_URL=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.HOST')
-      - SONAR_PROJECT_KEY=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.Project')
-      - SONAR_ORGANIZATION=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.Organization')
-      - export SONAR_LOGIN SONAR_HOST_URL SONAR_PROJECT_KEY SONAR_ORGANIZATION
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
       - unzip ./sonar-scanner-cli-5.0.1.3006-linux.zip
       - export PATH=$PATH:/sonar-scanner-5.0.1.3006-linux/bin/
   build:
     commands:
-      -sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION
-      - sleep 5
+      -sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
       - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
