@@ -1,4 +1,11 @@
 version: 0.2
+env:
+  secrets-manager:
+    LOGIN: x23212365MoviesTestSonar:sonartoken
+    HOST: x23212365MoviesTestSonar:HOST
+    Organization: x23212365MoviesTestSonar:Organization
+    Project: x23212365MoviesTestSonar:Project
+
 phases:
   install:
     commands:
