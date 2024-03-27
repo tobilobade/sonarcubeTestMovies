@@ -1,24 +1,20 @@
 version: 0.2
 env:
   secrets-manager:
-    LOGIN: x23212365/dam/prod/sonar:sonartoken
-    HOST: x23212365/dam/prod/sonar:HOST
-    Organization: x23212365/dam/prod/sonar:Organization
-    Project: x23212365/dam/prod/sonar:Project
+    SONAR_LOGIN_SECRET: x23212365/dam/prod/sonar
 phases:
   pre_build:
     commands:
-      - apt-get update
-      - apt-get install -y jq
-      - wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-      - tar xzf apache-maven-3.9.6-bin.tar.gz
-      - ln -s apache-maven-3.9.6 maven
-      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
-      - unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
-      - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      - |
+        SONAR_LOGIN=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.sonarToken')
+        SONAR_HOST_URL=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.sonarHostURL')
+        SONAR_PROJECT_KEY=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.sonarProjectKey')
+        SONAR_ORGANIZATION=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.sonarOrganization')
+        export SONAR_LOGIN SONAR_HOST_URL SONAR_PROJECT_KEY SONAR_ORGANIZATION
+
   build:
     commands:
-      - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      - sonar-scanner -Dsonar.login=$SONAR_LOGIN -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
