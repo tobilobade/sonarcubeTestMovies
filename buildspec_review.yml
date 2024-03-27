@@ -8,12 +8,11 @@ env:
 phases:
   install:
     runtime-versions:
-      python: 3.11
+      java: corretto21
   pre_build:
     commands:
-      - yum update -y
-      - yum install -y jq
-      - pip install -r requirements.txt  # Install Python dependencies
+      - apt-get update
+      - apt-get install -y jq
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
       - unzip ./sonar-scanner-cli-5.0.1.3006-linux.zip
       - export PATH=$PATH:/sonar-scanner-5.0.1.3006-linux/bin/
