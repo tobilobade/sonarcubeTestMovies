@@ -10,12 +10,12 @@ phases:
       - SONAR_PROJECT_KEY=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.Project')
       - SONAR_ORGANIZATION=$(aws secretsmanager get-secret-value --secret-id $SONAR_LOGIN_SECRET --query SecretString --output text | jq -r '.Organization')
       - export SONAR_LOGIN SONAR_HOST_URL SONAR_PROJECT_KEY SONAR_ORGANIZATION
-      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
-      - unzip sonar-scanner-cli-3.3.0.1492-linux.zip
-      - export PATH=$PATH:/path/to/sonar-scanner/bin 
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+      - unzip ./sonar-scanner-cli-5.0.1.3006-linux.zip
+      - export PATH=$PATH:/sonar-scanner-5.0.1.3006-linux/bin/
   build:
     commands:
-      - sonar-scanner -Dsonar.login=$SONAR_LOGIN -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION
+      -sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
