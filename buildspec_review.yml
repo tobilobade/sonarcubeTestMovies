@@ -6,9 +6,6 @@ env:
     Organization: x23212365/dam/prod/sonar:Organization
     Project: x23212365/dam/prod/sonar:Project
 phases:
-  install:
-    runtime-versions:
-      java: openjdk8
   pre_build:
     commands:
       - apt-get update
