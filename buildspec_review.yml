@@ -1,10 +1,10 @@
 version: 0.2
 env:
   secrets-manager:
-    LOGIN: x23212365MoviesTestSonar:sonartoken
-    HOST: x23212365MoviesTestSonar:HOST
-    Organization: x23212365MoviesTestSonar:Organization
-    Project: x23212365MoviesTestSonar:Project
+    LOGIN: x23212365/dam/prod/sonar:sonartoken
+    HOST: x23212365/dam/prod/sonar:HOST
+    Organization: x23212365/dam/prod/sonar:Organization
+    Project: x23212365/dam/prod/sonar:Project
 phases:
   install:
     runtime-versions:
